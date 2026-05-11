@@ -7,6 +7,7 @@ import AuditDetailView from "./components/AuditDetailView";
 import LeadManager from "./components/LeadManager";
 import AgencyInsights from "./components/AgencyInsights";
 import LeadProspector from "./components/LeadProspector";
+import SettingsManager from "./components/SettingsManager";
 import { Loader2, Globe, Sparkles, LogIn, ChevronRight, Users, Zap } from "lucide-react";
 import { doc, getDoc } from "firebase/firestore";
 import { Toaster, toast } from "sonner";
@@ -159,7 +160,10 @@ export default function App() {
               <div key="detail">
                 <AuditDetailView 
                   audit={auditData} 
-                  onBack={() => setSelectedAuditId(null)} 
+                  onBack={() => {
+                    setSelectedAuditId(null);
+                    window.history.replaceState({}, '', window.location.pathname);
+                  }} 
                 />
               </div>
             ) : (
@@ -174,6 +178,7 @@ export default function App() {
                 {activeTab === "audits" && <Dashboard onSelectAudit={setSelectedAuditId} />}
                 {activeTab === "leads" && <LeadManager />}
                 {activeTab === "analytics" && <AgencyInsights />}
+                {activeTab === "settings" && <SettingsManager />}
               </motion.div>
             )}
           </AnimatePresence>

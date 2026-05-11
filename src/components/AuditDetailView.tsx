@@ -45,6 +45,14 @@ export default function AuditDetailView({ audit, onBack }: AuditDetailViewProps)
     const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}?auditId=${audit.id}`;
     
+    // Explicitly copy to clipboard first to ensure reliability
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Share link copied to clipboard!");
+    } catch (err) {
+      console.error("Clipboard failed", err);
+    }
+
     const shareData = {
       title: `Aura Audit - ${audit.url}`,
       text: `Check out this AI-powered website audit for ${audit.url}`,
@@ -54,16 +62,9 @@ export default function AuditDetailView({ audit, onBack }: AuditDetailViewProps)
     if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
       try {
         await navigator.share(shareData);
-        toast.success("Shared successfully");
       } catch (err) {
-        if ((err as Error).name !== 'AbortError') {
-          copyToClipboard(shareUrl, 'share');
-          toast.success("Link copied to clipboard");
-        }
+        // User cancelled or share failed, we already copied it
       }
-    } else {
-      copyToClipboard(shareUrl, 'share');
-      toast.success("Link copied to clipboard");
     }
   };
 

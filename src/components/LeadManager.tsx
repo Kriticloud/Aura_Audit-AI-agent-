@@ -36,7 +36,9 @@ export default function LeadManager() {
 
   const filteredLeads = leads.filter(lead => {
     const matchesFilter = filter === "all" || lead.status === filter;
-    const matchesSearch = (lead.website || "").toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = 
+      (lead.website || "").toLowerCase().includes(search.toLowerCase()) ||
+      (lead.agencyId || "").toLowerCase().includes(search.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
@@ -68,7 +70,7 @@ export default function LeadManager() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" size={16} />
             <input 
               type="text" 
-              placeholder="Search leads..." 
+              placeholder="Search website or Agency ID..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="bg-white/5 border border-white/10 rounded-lg pl-10 pr-10 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all font-mono w-64"
@@ -130,9 +132,14 @@ export default function LeadManager() {
                 </div>
               </div>
 
-              <div className="mt-4">
-                <h3 className="font-mono text-sm truncate">{lead.website}</h3>
-                <p className="text-[10px] text-white/20 uppercase tracking-widest flex items-center mt-1">
+              <div className="mt-4 pb-4 border-b border-white/5 space-y-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-mono text-sm truncate">{lead.website}</h3>
+                  <div className="px-2 py-0.5 bg-white/5 rounded text-[8px] font-mono text-white/40 uppercase">
+                    ID: {lead.agencyId || "AG-ROOT"}
+                  </div>
+                </div>
+                <p className="text-[10px] text-white/20 uppercase tracking-widest flex items-center">
                   Added on {new Date(lead.updatedAt?.seconds * 1000).toLocaleDateString()}
                 </p>
               </div>
@@ -149,6 +156,12 @@ export default function LeadManager() {
                   className="px-3 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/20 rounded-lg text-[10px] uppercase font-bold transition-colors"
                 >
                   Converted
+                </button>
+                <button 
+                  onClick={() => handleStatusUpdate(lead.id, 'rejected')}
+                  className="px-3 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/10 rounded-lg text-[10px] uppercase font-bold transition-colors col-span-2"
+                >
+                  Reject Prospect
                 </button>
               </div>
 

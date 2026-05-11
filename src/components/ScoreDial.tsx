@@ -19,7 +19,7 @@ export default function ScoreDial({ score, label, size = 120 }: ScoreDialProps) 
   };
 
   return (
-    <div className="flex flex-col items-center justify-center space-y-2">
+    <div className="flex flex-col items-center justify-center space-y-2 score-dial-container">
       <div style={{ width: size, height: size }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>

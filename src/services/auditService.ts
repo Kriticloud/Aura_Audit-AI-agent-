@@ -150,6 +150,7 @@ export async function runAudit(url: string) {
       await addDoc(collection(db, "leads"), {
         website: url,
         status: "new",
+        agencyId: `AG-${auth.currentUser.uid.substring(0, 4)}`.toUpperCase(),
         auditId: auditRef.id,
         userId: auth.currentUser.uid,
         updatedAt: serverTimestamp(),
