@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --bg: #050505;
+  --card-bg: #111111;
+  --accent: #10b981;
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  background-color: var(--bg);
+  color: #ffffff;
+  font-family: var(--font-sans);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+}
+
+.card-gradient {
+  background: linear-gradient(145deg, #121212, #0a0a0a);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  .glass {
+    background: white !important;
+    color: black !important;
+    border: 1px solid #ddd !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+
+  h1, h2, h3, h4, p, span, div {
+    color: black !important;
+  }
+
+  .text-emerald-500, .text-green-500 {
+    color: #059669 !important;
+  }
+
+  .bg-emerald-500\/5, .bg-white\/5 {
+    background-color: #f9fafb !important;
+  }
+
+  :root {
+    --chart-text: black !important;
+    --chart-bg: #eee !important;
+  }
+
+  /* Ensure background colors and images are printed */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  .flex.h-screen {
+    height: auto !important;
+    display: block !important;
+  }
+
+  .sticky {
+    position: static !important;
+  }
+
+  /* Specific audits fixes */
+  .grid {
+    display: block !important;
+  }
+  
+  .glass {
+    margin-bottom: 20px !important;
+    break-inside: avoid;
+  }
+
+  ScoreDial {
+    break-inside: avoid;
+  }
+}
