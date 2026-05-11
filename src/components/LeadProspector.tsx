@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { APIProvider, useMapsLibrary } from "@vis.gl/react-google-maps";
-import { Search, Globe, Star, MapPin, ExternalLink, ShieldCheck, Zap, Loader2, Sparkles, AlertCircle } from "lucide-react";
+import { Search, Globe, Star, MapPin, ExternalLink, ShieldCheck, Zap, Loader2, Sparkles, AlertCircle, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { runAudit } from "../services/auditService";
+import { runAudit, bulkAddLeads } from "../services/auditService";
 import { toast } from "sonner";
+import { CheckCircle2, ChevronRight, Users } from "lucide-react";
 
 const API_KEY = process.env.GOOGLE_MAPS_PLATFORM_KEY || "";
 
@@ -56,6 +57,7 @@ function ProspectorContent({ isSimulated }: { isSimulated: boolean }) {
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState<DiscoveryLead[]>([]);
+  const [isBulkAdding, setIsBulkAdding] = useState(false);
   const placesLib = useMapsLibrary("places");
   
   const handleSearch = async (e: React.FormEvent) => {
@@ -128,6 +130,25 @@ function ProspectorContent({ isSimulated }: { isSimulated: boolean }) {
     }
   };
 
+  const handleBulkAdd = async () => {
+    const validLeads = results.filter(r => r.website);
+    if (validLeads.length === 0) {
+      toast.error("No prospects with websites found to add.");
+      return;
+    }
+
+    setIsBulkAdding(true);
+    try {
+      await bulkAddLeads(validLeads.map(l => ({ url: l.website!, name: l.name })));
+      toast.success(`Successfully added ${validLeads.length} prospects to Lead Manager`);
+    } catch (err) {
+      toast.error("Failed to add prospects");
+      console.error(err);
+    } finally {
+      setIsBulkAdding(false);
+    }
+  };
+
   return (
     <div className="space-y-10">
       <header className="flex items-center justify-between">
@@ -163,6 +184,30 @@ function ProspectorContent({ isSimulated }: { isSimulated: boolean }) {
           <span>Discover</span>
         </button>
       </form>
+
+      {results.length > 0 && (
+        <div className="flex items-center justify-between bg-emerald-500/5 border border-emerald-500/20 p-4 rounded-xl">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-emerald-500/10 rounded-lg">
+              <Users className="text-emerald-500" size={18} />
+            </div>
+            <div>
+              <p className="text-sm font-bold uppercase tracking-tight">Bulk Import Available</p>
+              <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">
+                {results.filter(r => r.website).length} prospects with active websites found
+              </p>
+            </div>
+          </div>
+          <button 
+            onClick={handleBulkAdd}
+            disabled={isBulkAdding}
+            className="px-6 py-2 bg-emerald-500 text-black font-bold rounded-lg text-[10px] uppercase tracking-widest hover:bg-emerald-400 transition-all flex items-center space-x-2 disabled:opacity-50"
+          >
+            {isBulkAdding ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />}
+            <span>{isBulkAdding ? "Importing..." : "Add All to Leads"}</span>
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <AnimatePresence>

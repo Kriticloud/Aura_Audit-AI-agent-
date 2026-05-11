@@ -217,7 +217,7 @@ export default function AuditDetailView({ audit, onBack }: AuditDetailViewProps)
                 <button 
                   onClick={handleGenerateMockup}
                   disabled={isGeneratingMockup}
-                  className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 rounded-lg text-xs font-bold transition-all flex items-center space-x-2"
+                  className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 rounded-lg text-xs font-bold transition-all flex items-center space-x-2 no-print"
                 >
                   {isGeneratingMockup ? (
                     <>
@@ -289,7 +289,7 @@ export default function AuditDetailView({ audit, onBack }: AuditDetailViewProps)
         </div>
 
         {/* Outreach Sidebar */}
-        <div className="space-y-8">
+        <div className="space-y-8 no-print">
           {/* Urgency Card */}
           <div className="glass p-6 rounded-2xl bg-red-500/5 border-red-500/20 space-y-4">
             <div className="flex items-center space-x-2 text-red-500 font-bold">

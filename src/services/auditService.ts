@@ -236,6 +236,43 @@ export async function updateLeadStatus(leadId: string, status: string) {
   });
 }
 
+export async function deleteLead(leadId: string) {
+  const { deleteDoc } = await import("firebase/firestore");
+  await deleteDoc(doc(db, "leads", leadId));
+}
+
+export async function addManualLead(website: string) {
+  if (!auth.currentUser) throw new Error("User must be logged in");
+  const leadRef = await addDoc(collection(db, "leads"), {
+    website,
+    status: "new",
+    agencyId: `AG-${auth.currentUser.uid.substring(0, 4)}`.toUpperCase(),
+    userId: auth.currentUser.uid,
+    updatedAt: serverTimestamp(),
+  });
+  return leadRef.id;
+}
+
+export async function bulkAddLeads(websites: { url: string; name?: string }[]) {
+  if (!auth.currentUser) throw new Error("User must be logged in");
+  
+  const batch = websites.map(w => ({
+    website: w.url,
+    name: w.name,
+    status: "new",
+    agencyId: `AG-${auth.currentUser!.uid.substring(0, 4)}`.toUpperCase(),
+    userId: auth.currentUser!.uid,
+    updatedAt: serverTimestamp(),
+  }));
+
+  const results = [];
+  for (const lead of batch) {
+    const docRef = await addDoc(collection(db, "leads"), lead);
+    results.push(docRef.id);
+  }
+  return results;
+}
+
 export async function getAgencyInsights() {
   if (!auth.currentUser) return null;
   const audits = await getRecentAudits();
